@@ -75,6 +75,44 @@ def compute_confidence_intervals(
     return lower_bounds, upper_bounds
 
 
+def save_data(X: np.ndarray, y: np.ndarray, beta_true: np.ndarray, output_dir: str = "data"):
+    """
+    Guarda los datos generados en archivos .npy
+
+    Args:
+        X: Matriz de diseño
+        y: Vector de salidas
+        beta_true: Coeficientes verdaderos
+        output_dir: Directorio de salida
+    """
+    import os
+    os.makedirs(output_dir, exist_ok=True)
+
+    np.save(os.path.join(output_dir, "X.npy"), X)
+    np.save(os.path.join(output_dir, "y.npy"), y)
+    np.save(os.path.join(output_dir, "beta_true.npy"), beta_true)
+
+    print(f"Datos guardados en {output_dir}/")
+
+
+def load_data(data_dir: str = "data") -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Carga los datos desde archivos .npy
+
+    Args:
+        data_dir: Directorio donde están los datos
+
+    Returns:
+        X, y, beta_true
+    """
+    import os
+    X = np.load(os.path.join(data_dir, "X.npy"))
+    y = np.load(os.path.join(data_dir, "y.npy"))
+    beta_true = np.load(os.path.join(data_dir, "beta_true.npy"))
+
+    return X, y, beta_true
+
+
 if __name__ == "__main__":
     print("Generando datos sintéticos...")
     X, y, beta_true = generate_synthetic_data()
@@ -83,3 +121,6 @@ if __name__ == "__main__":
     print(f"Dimensiones de y: {y.shape}")
     print(f"Número de coeficientes: {len(beta_true)}")
     print(f"Primeros 5 coeficientes verdaderos: {beta_true[:5]}")
+
+    save_data(X, y, beta_true)
+    print("\nDatos guardados exitosamente.")
